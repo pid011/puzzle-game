@@ -72,6 +72,34 @@ inline void MoveCursorToGameBottom()
     SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), pos);
 }
 
+string GenerateTimeIntervalStringToSecond(double second)
+{
+    int hour = 0, min = 0;
+    while ((second / 3600) >= 1)
+    {
+        hour++;
+        second -= 3600;
+    }
+    while (second / 60 >= 1)
+    {
+        min++;
+        second -= 60;
+    }
+
+    string msg = "";
+    if (hour > 0)
+    {
+        msg += to_string(hour) + "h ";
+    }
+    if (min > 0)
+    {
+        msg += to_string(min) + "m ";
+    }
+    msg += to_string((int)second) + "s";
+
+    return msg;
+}
+
 /// <summary>
 /// Reset the one-line message output area at the bottom of the game screen.
 /// </summary>
@@ -320,7 +348,7 @@ void PlayPuzzleGame()
     line.append(10, '-');
     cout << line << endl;
     cout << "move count: " << count << endl;
-    cout << "play time : " << duration << "s" << endl;
+    cout << "play time : " << GenerateTimeIntervalStringToSecond(duration) << endl;
     cout << line << endl;
 
 }

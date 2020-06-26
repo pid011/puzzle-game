@@ -15,7 +15,7 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="puzzle_game.cpp">
+    <ClCompile Include="sliding_puzzle.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

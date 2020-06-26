@@ -72,6 +72,11 @@ inline void MoveCursorToGameBottom()
     SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), pos);
 }
 
+/// <summary>
+/// Return time text
+/// </summary>
+/// <param name="second"></param>
+/// <returns></returns>
 string GenerateTimeIntervalStringToSecond(double second)
 {
     int hour = 0, min = 0;

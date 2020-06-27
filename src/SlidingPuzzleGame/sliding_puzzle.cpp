@@ -5,6 +5,7 @@
 #include <iomanip>
 #include <string>
 #include <iostream>
+#include <cmath>
 
 using namespace std;
 
@@ -22,19 +23,23 @@ struct Position
 struct ScoreInfo
 {
     string name;
-    int moveCount;
-    double duration;
+    int moveCount{};
+    double playtime{};
 };
 
 const int _width = 4;
 const int _height = 4;
 const int _blank = -1;
 const string _blankSymbol = "[]";
+const int _rankCount = 10;
+const int _nameLengthLimit = 15;
 
 /// <summary>
 /// Puzzle map of the game
 /// </summary>
 short _puzzleMap[_height][_width];
+
+ScoreInfo _rank[_rankCount];
 
 inline short GetRealMapPositionX(short x)
 {
@@ -77,18 +82,23 @@ inline void MoveCursorToGameBottom()
 /// </summary>
 /// <param name="second"></param>
 /// <returns></returns>
-string GenerateTimeIntervalStringToSecond(double second)
+string GenerateTimeIntervalStringToMillisecond(double ms)
 {
-    int hour = 0, min = 0;
-    while ((second / 3600) >= 1)
+    int hour = 0, min = 0, sec = 0;
+    while ((ms / 3600) >= 1)
     {
         hour++;
-        second -= 3600;
+        ms -= 3600;
     }
-    while (second / 60 >= 1)
+    while (ms / 60 >= 1)
     {
         min++;
-        second -= 60;
+        ms -= 60;
+    }
+    while (ms / 1 >= 1)
+    {
+        sec++;
+        ms -= 1;
     }
 
     string msg = "";
@@ -100,7 +110,12 @@ string GenerateTimeIntervalStringToSecond(double second)
     {
         msg += to_string(min) + "m ";
     }
-    msg += to_string((int)second) + "s";
+    if (sec > 0)
+    {
+        msg += to_string(sec) + "s ";
+    }
+
+    msg += to_string(ms).substr(2, 3) + "ms";
 
     return msg;
 }
@@ -209,6 +224,12 @@ void ShuffleMap()
     ResetSingleMessage();
 }
 
+void ShuffleMapTest()
+{
+    srand((unsigned)time(NULL));
+    SwapPuzzle(Position{ 3, 3 }, Position{ 2, 3 });
+}
+
 /// <summary>
 /// Check if the puzzle is complete
 /// </summary>
@@ -313,6 +334,49 @@ int MovePuzzle(Direction direction)
     return moveCount;
 }
 
+void AddAndPrintRankDialog(int moveCount, double duration)
+{
+    ScoreInfo newScoreInfo = { "", moveCount, duration };
+    cout << "Enter your name: ";
+    string name;
+    getline(cin, name);
+    cout << endl;
+    newScoreInfo.name = name;
+
+    system("cls");
+
+    cout << ":: RANK ::" << endl;
+    bool added = false;
+    int i = 0, j = 0;
+    while (i < _rankCount)
+    {
+        if ((!added) && (_rank[j].name == "" || newScoreInfo.playtime < _rank[j].playtime))
+        {
+            added = true;
+            ScoreInfo p1 = _rank[j];
+            ScoreInfo p2;
+            _rank[j] = newScoreInfo;
+            for (int k = j + 1; k < _rankCount; k++)
+            {
+                p2 = _rank[k];
+                _rank[k] = p1;
+                p1 = p2;
+            }
+        }
+        else
+        {
+            j++;
+        }
+        string timeText = GenerateTimeIntervalStringToMillisecond(_rank[i].playtime).c_str();
+        printf("#%-3d: %-16s : %s\n",
+            i + 1,
+            (_rank[i].name == newScoreInfo.name ? ("*" + _rank[i].name).c_str() : _rank[i].name.c_str()),
+            timeText == "000ms" ? "---ms" : timeText.c_str());
+        i++;
+    }
+    cout << string().append(40, '-') << endl;
+}
+
 void PlayPuzzleGame()
 {
     system("cls");
@@ -323,8 +387,8 @@ void PlayPuzzleGame()
         PrintSingleMessage(to_string(i));
         Sleep(1000);
     }
-    ShuffleMap();
-
+    //ShuffleMap();
+    ShuffleMapTest();
     int count = 0;
     string moveCountMessage = "Move count: ";
     PrintSingleMessage(moveCountMessage + to_string(count));
@@ -345,21 +409,42 @@ void PlayPuzzleGame()
         }
     }
     clock_t t2 = clock();
-    double duration = (t2 - t1) / CLOCKS_PER_SEC;
+    double duration = ((double)t2 - t1) / CLOCKS_PER_SEC;
 
     ResetSingleMessage();
     cout << "Done!" << endl;
     string line = "";
-    line.append(10, '-');
+    line.append(20, '-');
     cout << line << endl;
     cout << "move count: " << count << endl;
-    cout << "play time : " << GenerateTimeIntervalStringToSecond(duration) << endl;
+    cout << "play time : " << GenerateTimeIntervalStringToMillisecond(duration) << endl;
     cout << line << endl;
-
+    
+    AddAndPrintRankDialog(count, duration);
 }
 
 int main()
 {
-    PlayPuzzleGame();
+    while (true)
+    {
+        PlayPuzzleGame();
+
+        string answer;
+        while (answer != "y" && answer != "n")
+        {
+            cout << "Do you want to restart the game? (y/n)" << endl;
+            cout << "> ";
+            getline(cin, answer);
+        }
+        if (answer == "y")
+        {
+            continue;
+        }
+        else
+        {
+            cout << "Bye!" << endl;
+            break;
+        }
+    }
     return 0;
 }

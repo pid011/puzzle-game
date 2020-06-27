@@ -333,15 +333,26 @@ void MovePuzzle(Direction direction)
 void AddAndPrintRankDialog(int moveCount, double duration)
 {
     ScoreInfo newScoreInfo = { "", moveCount, duration };
-    printf("Enter your name: ");
+
     string name;
-    getline(cin, name);
-    printf("\n");
+    while (true)
+    {
+        printf("Enter your name: ");
+        getline(cin, name);
+        if (name.length() > _nameLengthLimit)
+        {
+            printf("The name must be no more than %d characters.\n", _nameLengthLimit);
+        }
+        else
+        {
+            break;
+        }
+    }
     newScoreInfo.name = name;
 
     system("cls");
 
-    printf(":: RANK ::\n");
+    printf(":::::::::::::::::[RANK]:::::::::::::::::\n");
     printf("----------------------------------------\n");
     bool added = false;
     int i = 0, j = 0;

@@ -129,7 +129,7 @@ void ResetSingleMessage()
     MoveCursor(p);
     string s = "";
     s.append(100, ' ');
-    cout << s;
+    printf("%s", s.c_str());
     MoveCursor(p);
 }
 
@@ -140,7 +140,7 @@ void ResetSingleMessage()
 void PrintSingleMessage(string message)
 {
     ResetSingleMessage();
-    cout << message;
+    printf(message.c_str());
     MoveCursorToGameBottom();
 }
 
@@ -155,11 +155,11 @@ void SetPuzzleItem(Position p, int item)
     MoveCursorToMapPosition(p);
     if (item == -1)
     {
-        cout << _blankSymbol;
+        printf(_blankSymbol.c_str());
     }
     else
     {
-        cout << item << " ";
+        printf("%d ", item);
     }
 }
 
@@ -195,7 +195,7 @@ void InitializeMap()
     _puzzleMap[_height - 1][_width - 1] = _blank;
     Position p2 = { _height - 1, _width - 1 };
     MoveCursorToMapPosition(p2);
-    cout << _blankSymbol;
+    printf(_blankSymbol.c_str());
     ResetSingleMessage();
 }
 
@@ -337,15 +337,16 @@ int MovePuzzle(Direction direction)
 void AddAndPrintRankDialog(int moveCount, double duration)
 {
     ScoreInfo newScoreInfo = { "", moveCount, duration };
-    cout << "Enter your name: ";
+    printf("Enter your name: ");
     string name;
     getline(cin, name);
-    cout << endl;
+    printf("\n");
     newScoreInfo.name = name;
 
     system("cls");
 
-    cout << ":: RANK ::" << endl;
+    printf(":: RANK ::\n");
+    printf("----------------------------------------\n");
     bool added = false;
     int i = 0, j = 0;
     while (i < _rankCount)
@@ -368,13 +369,13 @@ void AddAndPrintRankDialog(int moveCount, double duration)
             j++;
         }
         string timeText = GenerateTimeIntervalStringToMillisecond(_rank[i].playtime).c_str();
-        printf("#%-3d: %-16s : %s\n",
+        printf(" #%-3d: %-16s : %s\n",
             i + 1,
             (_rank[i].name == newScoreInfo.name ? ("*" + _rank[i].name).c_str() : _rank[i].name.c_str()),
             timeText == "000ms" ? "---ms" : timeText.c_str());
         i++;
     }
-    cout << string().append(40, '-') << endl;
+    printf("----------------------------------------\n");
 }
 
 void PlayPuzzleGame()
@@ -387,8 +388,8 @@ void PlayPuzzleGame()
         PrintSingleMessage(to_string(i));
         Sleep(1000);
     }
-    //ShuffleMap();
-    ShuffleMapTest();
+    ShuffleMap();
+    //ShuffleMapTest();
     int count = 0;
     string moveCountMessage = "Move count: ";
     PrintSingleMessage(moveCountMessage + to_string(count));
@@ -412,14 +413,12 @@ void PlayPuzzleGame()
     double duration = ((double)t2 - t1) / CLOCKS_PER_SEC;
 
     ResetSingleMessage();
-    cout << "Done!" << endl;
-    string line = "";
-    line.append(20, '-');
-    cout << line << endl;
-    cout << "move count: " << count << endl;
-    cout << "play time : " << GenerateTimeIntervalStringToMillisecond(duration) << endl;
-    cout << line << endl;
-    
+    printf("Done!\n\n");
+    printf("--------------------\n");
+    printf("move count: %d\n", count);
+    printf("play time : %s\n", GenerateTimeIntervalStringToMillisecond(duration).c_str());
+    printf("--------------------\n");
+
     AddAndPrintRankDialog(count, duration);
 }
 
@@ -432,8 +431,7 @@ int main()
         string answer;
         while (answer != "y" && answer != "n")
         {
-            cout << "Do you want to restart the game? (y/n)" << endl;
-            cout << "> ";
+            printf("Do you want to restart the game? (y/n)\n> ");
             getline(cin, answer);
         }
         if (answer == "y")
@@ -442,7 +440,7 @@ int main()
         }
         else
         {
-            cout << "Bye!" << endl;
+            printf("Bye!\n");
             break;
         }
     }

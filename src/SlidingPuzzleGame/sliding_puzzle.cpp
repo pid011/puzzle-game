@@ -395,8 +395,8 @@ void PlayPuzzleGame()
         PrintSingleMessage(to_string(i));
         Sleep(1000);
     }
-    //ShuffleMap();
-    ShuffleMapTest();
+    ShuffleMap();
+    //ShuffleMapTest();
     int count = 0;
     string moveCountMessage = "Move count: ";
     PrintSingleMessage(moveCountMessage + to_string(count));

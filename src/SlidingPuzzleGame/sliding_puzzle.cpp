@@ -279,10 +279,8 @@ Position FindBlankPosition()
 /// </summary>
 /// <param name="direction">Arrow keys pressed by the user</param>
 /// <returns>Current puzzle move count</returns>
-int MovePuzzle(Direction direction)
+void MovePuzzle(Direction direction)
 {
-    static int moveCount = 0;
-
     Position blank = FindBlankPosition();
     Position target = blank;
 
@@ -329,9 +327,7 @@ int MovePuzzle(Direction direction)
     if (canMovePuzzle)
     {
         SwapPuzzle(blank, target);
-        moveCount++;
     }
-    return moveCount;
 }
 
 void AddAndPrintRankDialog(int moveCount, double duration)
@@ -388,8 +384,8 @@ void PlayPuzzleGame()
         PrintSingleMessage(to_string(i));
         Sleep(1000);
     }
-    ShuffleMap();
-    //ShuffleMapTest();
+    //ShuffleMap();
+    ShuffleMapTest();
     int count = 0;
     string moveCountMessage = "Move count: ";
     PrintSingleMessage(moveCountMessage + to_string(count));
@@ -404,7 +400,8 @@ void PlayPuzzleGame()
             if (key == 224)
             {
                 key = _getch();
-                count = MovePuzzle(static_cast<Direction>(key));
+                MovePuzzle(static_cast<Direction>(key));
+                count++;
                 PrintSingleMessage(moveCountMessage + to_string(count));
             }
         }

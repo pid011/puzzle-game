@@ -82,7 +82,7 @@ inline void MoveCursorToGameBottom()
 /// </summary>
 /// <param name="second"></param>
 /// <returns></returns>
-string GenerateTimeIntervalStringToMillisecond(double ms)
+string GenerateMillisecondToString(double ms)
 {
     int hour = 0, min = 0, sec = 0;
     while ((ms / 3600) >= 1)
@@ -375,7 +375,7 @@ void AddAndPrintRankDialog(int moveCount, double duration)
         {
             j++;
         }
-        string timeText = GenerateTimeIntervalStringToMillisecond(_rank[i].playtime).c_str();
+        string timeText = GenerateMillisecondToString(_rank[i].playtime).c_str();
         printf(" #%-3d: %-16s : %s\n",
             i + 1,
             (_rank[i].name == newScoreInfo.name ? ("*" + _rank[i].name).c_str() : _rank[i].name.c_str()),
@@ -424,7 +424,7 @@ void PlayPuzzleGame()
     printf("Done!\n\n");
     printf("--------------------\n");
     printf("move count: %d\n", count);
-    printf("play time : %s\n", GenerateTimeIntervalStringToMillisecond(duration).c_str());
+    printf("play time : %s\n", GenerateMillisecondToString(duration).c_str());
     printf("--------------------\n");
 
     AddAndPrintRankDialog(count, duration);
